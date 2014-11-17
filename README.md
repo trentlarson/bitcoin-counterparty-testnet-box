@@ -1,3 +1,36 @@
+
+
+
+Here’s my Counterparty build process… which doesn’t work dependably: when you run counterpartyd (the last step) it now complains about non-ASCII characters in the Python output, which wasn’t happening last Friday so I don’t know what the crap is going on.  Anyway, when we’ve got something working maybe we’ll make a trading_build repo that can build all these apps.  I’m trying this in a raw Ubuntu before I give up and move on.
+
+
+
+    git clone https://github.com/trentlarson/bitcoin-counterparty-testnet-box.git
+    cd bitcoin-counterparty-testnet-box
+
+    docker build -t xcp-testnet counterparty
+... which takes about 3 minutes, then:
+    docker run -i -t -p 14000:14000 -p 19001:19001 xcp-testnet
+
+... then, while inside docker:
+    bitcoind -datadir=1 -daemon
+    bitcoind -datadir=2 -daemon
+
+... and, if you want to test that it’s running, you can do this:
+    bitcoin-cli -datadir=1 getinfo
+    bitcoin-cli -datadir=1 setgenerate true 101
+... which takes about 10 seconds, then do this to see that there are 50 Bitcoin available:
+    bitcoin-cli -datadir=1 getinfo
+... and note that these even work outside docker if you add this argument: -rpcconnect=`boot2docker ip`
+
+... and now you can run counterparty, e.g.:
+    counterpartyd --config-file=/home/tester/.config/counterpartyd-testnet/counterpartyd.conf --data-dir=/home/tester/.config/counterpartyd-testnet server > nohup.out 2>&1 &
+
+... but you’ll have to watch that nohup.out file because it’ll probably grow huge with a bunch of error messages… if it says “Resuming parsing” then it’s probably working for you — if so, let me know.
+
+
+
+
 # bitcoin-testnet-box
 
 This is a private, bitcoin, testnet-in-a-box.
