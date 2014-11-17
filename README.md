@@ -28,7 +28,7 @@ Here’s my Counterparty build process… which doesn’t work dependably: when 
 
     bitcoin-cli -datadir=1 getinfo
 
-... and note that these even work outside docker if you add this argument: -rpcconnect=`boot2docker ip`
+... and note that these even work outside docker if you add this argument: -rpcconnect=\`boot2docker ip\`
 
 ... and now you can run counterparty, e.g.:
 
